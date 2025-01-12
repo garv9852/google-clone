@@ -1,74 +1,179 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { StyleSheet, ScrollView, View, Image, TouchableOpacity, TextInput } from "react-native";
+import { ThemedView } from "@/components/ThemedView";
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { ThemedText } from "@/components/ThemedText";
+import Screen from "@/components/Screen";
+import { useState } from "react";
+import { useTheme } from "@react-navigation/native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+function Home() {
+	const theme = useTheme();
+	const [isSearchTypeGoogle, setIsSearchTypeGoogle] = useState<boolean>(true);
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+	return (
+		<Screen>
+			<View style={styles.head}>
+				<Ionicons name="funnel" size={28} color={"#a8c7fa"} />
+
+				<ThemedView backgroundTheme="foreground" style={styles.searchTypeCont}>
+					<TouchableOpacity onPress={() => setIsSearchTypeGoogle(true)}>
+						{isSearchTypeGoogle ? (
+							<ThemedView style={styles.seachType}>
+								<Image
+									source={require("@/assets/images/google-icon.png")}
+									style={styles.googleIcon}
+								/>
+								{isSearchTypeGoogle && (
+									<ThemedText style={styles.ml_5}>Search</ThemedText>
+								)}
+							</ThemedView>
+						) : (
+							<View style={styles.seachType}>
+								<Image
+									source={require("@/assets/images/google-icon.png")}
+									style={styles.googleIcon}
+								/>
+								{isSearchTypeGoogle && (
+									<ThemedText style={styles.ml_5}>Search</ThemedText>
+								)}
+							</View>
+						)}
+					</TouchableOpacity>
+
+					<TouchableOpacity onPress={() => setIsSearchTypeGoogle(false)}>
+						{!isSearchTypeGoogle ? (
+							<ThemedView style={styles.seachType}>
+								<Image
+									source={require("@/assets/images/google-gemini.png")}
+									style={styles.googleIcon}
+								/>
+								{!isSearchTypeGoogle && (
+									<ThemedText style={styles.ml_5}>Gemini</ThemedText>
+								)}
+							</ThemedView>
+						) : (
+							<View style={styles.seachType}>
+								<Image
+									source={require("@/assets/images/google-gemini.png")}
+									style={styles.googleIcon}
+								/>
+								{!isSearchTypeGoogle && (
+									<ThemedText style={styles.ml_5}>Gemini</ThemedText>
+								)}
+							</View>
+						)}
+					</TouchableOpacity>
+				</ThemedView>
+
+				<Ionicons name="funnel" size={28} color={"#a8c7fa"} />
+			</View>
+
+			<ScrollView>
+				<View style={styles.center}>
+					<Image
+						source={
+							theme.dark
+								? require("@/assets/images/google-dark.png")
+								: require("@/assets/images/google.png")
+						}
+						style={styles.google}
+					/>
+				</View>
+
+				<ThemedView style={styles.searchCont} backgroundTheme="foreground">
+					<View style={[styles.row, styles.alignCenter]}>
+						<MaterialIcons name="search" size={26} color={"gray"} />
+						<ThemedText style={styles.ml_10} size={28} darkColor="gray">
+							Search
+						</ThemedText>
+					</View>
+
+					<View style={styles.row}>
+						<TouchableOpacity>
+							<MaterialIcons name="mic" size={26} color={"gray"} />
+						</TouchableOpacity>
+						<TouchableOpacity>
+							<MaterialCommunityIcons
+								style={styles.ml_15}
+								name="google-lens"
+								size={26}
+								color={"gray"}
+							/>
+						</TouchableOpacity>
+					</View>
+				</ThemedView>
+
+				<View>
+
+				</View>
+
+			</ScrollView>
+		</Screen>
+	);
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+	head: {
+		justifyContent: "space-between",
+		flexDirection: "row",
+		alignItems: "center",
+		padding: 15,
+	},
+	searchTypeCont: {
+		padding: 5,
+		borderRadius: 10,
+		flexDirection: "row",
+	},
+	seachType: {
+		padding: 10,
+		borderRadius: 8,
+		flexDirection: "row",
+		justifyContent: "center",
+		marginRight: 2,
+	},
+	selectedSearchType: {
+		marginRight: 5,
+	},
+	googleIcon: {
+		width: 20,
+		height: 20,
+	},
+	center: {
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	google: {
+		height: 45,
+		width: 135,
+		marginTop: 40,
+	},
+	ml_5: {
+		marginLeft: 5,
+	},
+	ml_10: {
+		marginLeft: 10,
+	},
+	ml_15: {
+		marginLeft: 15,
+	},
+	m10: {
+		margin: 10,
+	},
+	row: {
+		flexDirection: "row",
+	},
+	alignCenter: {
+		alignItems: "center",
+	},
+	searchCont: {
+		borderRadius: 40,
+		padding: 18,
+		marginTop: 30,
+		marginHorizontal: 10,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+	},
 });
+
+export default Home;
