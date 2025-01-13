@@ -1,6 +1,6 @@
 import { StyleSheet, ScrollView, View, Image, TouchableOpacity, TextInput } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Entypo, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import Screen from "@/components/Screen";
 import { useState } from "react";
@@ -13,8 +13,6 @@ function Home() {
 	return (
 		<Screen>
 			<View style={styles.head}>
-				<Ionicons name="funnel" size={28} color={"#a8c7fa"} />
-
 				<ThemedView backgroundTheme="foreground" style={styles.searchTypeCont}>
 					<TouchableOpacity onPress={() => setIsSearchTypeGoogle(true)}>
 						{isSearchTypeGoogle ? (
@@ -23,9 +21,8 @@ function Home() {
 									source={require("@/assets/images/google-icon.png")}
 									style={styles.googleIcon}
 								/>
-								{isSearchTypeGoogle && (
-									<ThemedText style={styles.ml_5}>Search</ThemedText>
-								)}
+
+								<ThemedText style={styles.ml_5}>Search</ThemedText>
 							</ThemedView>
 						) : (
 							<View style={styles.seachType}>
@@ -33,9 +30,6 @@ function Home() {
 									source={require("@/assets/images/google-icon.png")}
 									style={styles.googleIcon}
 								/>
-								{isSearchTypeGoogle && (
-									<ThemedText style={styles.ml_5}>Search</ThemedText>
-								)}
 							</View>
 						)}
 					</TouchableOpacity>
@@ -47,9 +41,8 @@ function Home() {
 									source={require("@/assets/images/google-gemini.png")}
 									style={styles.googleIcon}
 								/>
-								{!isSearchTypeGoogle && (
-									<ThemedText style={styles.ml_5}>Gemini</ThemedText>
-								)}
+
+								<ThemedText style={styles.ml_5}>Gemini</ThemedText>
 							</ThemedView>
 						) : (
 							<View style={styles.seachType}>
@@ -57,15 +50,10 @@ function Home() {
 									source={require("@/assets/images/google-gemini.png")}
 									style={styles.googleIcon}
 								/>
-								{!isSearchTypeGoogle && (
-									<ThemedText style={styles.ml_5}>Gemini</ThemedText>
-								)}
 							</View>
 						)}
 					</TouchableOpacity>
 				</ThemedView>
-
-				<Ionicons name="funnel" size={28} color={"#a8c7fa"} />
 			</View>
 
 			<ScrollView>
@@ -82,31 +70,52 @@ function Home() {
 
 				<ThemedView style={styles.searchCont} backgroundTheme="foreground">
 					<View style={[styles.row, styles.alignCenter]}>
-						<MaterialIcons name="search" size={26} color={"gray"} />
-						<ThemedText style={styles.ml_10} size={28} darkColor="gray">
+						<MaterialIcons name="search" size={24} color={"gray"} />
+						<ThemedText
+							style={[styles.ml_10, styles.mb4]}
+							size={24}
+							darkColor="gray"
+							lightColor="gray"
+						>
 							Search
 						</ThemedText>
 					</View>
 
 					<View style={styles.row}>
 						<TouchableOpacity>
-							<MaterialIcons name="mic" size={26} color={"gray"} />
+							<MaterialIcons name="mic" size={24} color={"gray"} />
 						</TouchableOpacity>
 						<TouchableOpacity>
 							<MaterialCommunityIcons
 								style={styles.ml_15}
 								name="google-lens"
-								size={26}
+								size={24}
 								color={"gray"}
 							/>
 						</TouchableOpacity>
 					</View>
 				</ThemedView>
 
-				<View>
-
+				<View style={[styles.mh_10, , styles.mv_15, styles.row, styles.justifyBetween]}>
+					<TouchableOpacity style={[styles.feature, { backgroundColor: "#fac33745" }]}>
+						<MaterialCommunityIcons
+							name="image-search-outline"
+							color={"#b58813"}
+							size={24}
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity style={[styles.feature, { backgroundColor: "#7495c96b" }]}>
+						<Ionicons name="language" color={"#7495c9"} size={24} />
+					</TouchableOpacity>
+					<TouchableOpacity style={[styles.feature, { backgroundColor: "#b7cfbf52" }]}>
+						<Entypo name="graduation-cap" color={"#94ab9b"} size={24} />
+					</TouchableOpacity>
+					<TouchableOpacity style={[styles.feature, { backgroundColor: "#db90907d" }]}>
+						<MaterialCommunityIcons name="music-note-eighth" color={"#db9090"} size={24} />
+					</TouchableOpacity>
 				</View>
 
+				<ThemedView style={styles.h_2} backgroundTheme="foreground" />
 			</ScrollView>
 		</Screen>
 	);
@@ -114,7 +123,7 @@ function Home() {
 
 const styles = StyleSheet.create({
 	head: {
-		justifyContent: "space-between",
+		justifyContent: "center",
 		flexDirection: "row",
 		alignItems: "center",
 		padding: 15,
@@ -159,11 +168,17 @@ const styles = StyleSheet.create({
 	m10: {
 		margin: 10,
 	},
+	mb4: {
+		marginBottom: 4,
+	},
 	row: {
 		flexDirection: "row",
 	},
 	alignCenter: {
 		alignItems: "center",
+	},
+	justifyBetween: {
+		justifyContent: "space-between",
 	},
 	searchCont: {
 		borderRadius: 40,
@@ -173,6 +188,23 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between",
+	},
+	feature: {
+		height: 65,
+		width: 90,
+		borderRadius: 35,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "red",
+	},
+	h_2: {
+		height: 2,
+	},
+	mh_10: {
+		marginHorizontal: 10,
+	},
+	mv_15: {
+		marginVertical: 15,
 	},
 });
 
