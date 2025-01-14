@@ -1,10 +1,12 @@
-import { StyleSheet, ScrollView, View, Image, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, ScrollView, View, Image, TouchableOpacity, TextInput, FlatList } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
-import { Entypo, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Entypo, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import Screen from "@/components/Screen";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useTheme } from "@react-navigation/native";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import NewsApi, { Article } from "@/services/News-api";
 
 function Home() {
 	const theme = useTheme();
@@ -12,51 +14,51 @@ function Home() {
 
 	return (
 		<Screen>
-			<View style={styles.head}>
-				<ThemedView backgroundTheme="foreground" style={styles.searchTypeCont}>
-					<TouchableOpacity onPress={() => setIsSearchTypeGoogle(true)}>
-						{isSearchTypeGoogle ? (
-							<ThemedView style={styles.seachType}>
-								<Image
-									source={require("@/assets/images/google-icon.png")}
-									style={styles.googleIcon}
-								/>
-
-								<ThemedText style={styles.ml_5}>Search</ThemedText>
-							</ThemedView>
-						) : (
-							<View style={styles.seachType}>
-								<Image
-									source={require("@/assets/images/google-icon.png")}
-									style={styles.googleIcon}
-								/>
-							</View>
-						)}
-					</TouchableOpacity>
-
-					<TouchableOpacity onPress={() => setIsSearchTypeGoogle(false)}>
-						{!isSearchTypeGoogle ? (
-							<ThemedView style={styles.seachType}>
-								<Image
-									source={require("@/assets/images/google-gemini.png")}
-									style={styles.googleIcon}
-								/>
-
-								<ThemedText style={styles.ml_5}>Gemini</ThemedText>
-							</ThemedView>
-						) : (
-							<View style={styles.seachType}>
-								<Image
-									source={require("@/assets/images/google-gemini.png")}
-									style={styles.googleIcon}
-								/>
-							</View>
-						)}
-					</TouchableOpacity>
-				</ThemedView>
-			</View>
-
 			<ScrollView>
+				<View style={styles.head}>
+					<ThemedView backgroundTheme="foreground" style={styles.searchTypeCont}>
+						<TouchableOpacity onPress={() => setIsSearchTypeGoogle(true)}>
+							{isSearchTypeGoogle ? (
+								<ThemedView style={styles.seachType}>
+									<Image
+										source={require("@/assets/images/google-icon.png")}
+										style={styles.googleIcon}
+									/>
+
+									<ThemedText style={styles.ml_5}>Search</ThemedText>
+								</ThemedView>
+							) : (
+								<View style={styles.seachType}>
+									<Image
+										source={require("@/assets/images/google-icon.png")}
+										style={styles.googleIcon}
+									/>
+								</View>
+							)}
+						</TouchableOpacity>
+
+						<TouchableOpacity onPress={() => setIsSearchTypeGoogle(false)}>
+							{!isSearchTypeGoogle ? (
+								<ThemedView style={styles.seachType}>
+									<Image
+										source={require("@/assets/images/google-gemini.png")}
+										style={styles.googleIcon}
+									/>
+
+									<ThemedText style={styles.ml_5}>Gemini</ThemedText>
+								</ThemedView>
+							) : (
+								<View style={styles.seachType}>
+									<Image
+										source={require("@/assets/images/google-gemini.png")}
+										style={styles.googleIcon}
+									/>
+								</View>
+							)}
+						</TouchableOpacity>
+					</ThemedView>
+				</View>
+
 				<View style={styles.center}>
 					<Image
 						source={
@@ -96,7 +98,7 @@ function Home() {
 					</View>
 				</ThemedView>
 
-				<View style={[styles.mh_10, , styles.mv_15, styles.row, styles.justifyBetween]}>
+				<View style={[styles.mh_10, styles.mv_15, styles.row, styles.justifyBetween]}>
 					<TouchableOpacity style={[styles.feature, { backgroundColor: "#fac33745" }]}>
 						<MaterialCommunityIcons
 							name="image-search-outline"
@@ -115,11 +117,47 @@ function Home() {
 					</TouchableOpacity>
 				</View>
 
-				<ThemedView style={styles.h_2} backgroundTheme="foreground" />
+				<ThemedView style={styles.h_1} backgroundTheme="foreground" />
+
+				<View>
+					<NewsList />
+				</View>
 			</ScrollView>
 		</Screen>
 	);
 }
+
+const NewsList = () => {
+	const articlesQuery = useInfiniteQuery({
+		queryKey: ["articles"],
+		queryFn: ({ pageParam }) => NewsApi.get_top_headlines(8, pageParam),
+		initialPageParam: 1,
+		getNextPageParam: (_, allpages) => allpages.length,
+	});
+
+	const articles = articlesQuery.data?.pages.map((page) => page.articles).flat();
+
+	return <FlatList data={articles} renderItem={({ item }) => <NewsItem item={item} />} />;
+};
+
+const NewsItem: React.ExoticComponent<{ item: Article }> = memo(({ item }) => {
+	return (
+		<View style={styles.newsItem}>
+			<Image source={{ uri: item.urlToImage }} style={styles.newsImage} />
+			<ThemedText style={styles.newsTitle} type="defaultSemiBold" size={22}>
+				{item.title}
+			</ThemedText>
+
+			<View>
+				<ThemedText size={12}>{item.source.name}</ThemedText>
+				<View>
+					<AntDesign name="hearto"/>
+				</View>
+			</View>
+			<ThemedView style={styles.h_1} backgroundTheme="foreground" />
+		</View>
+	);
+});
 
 const styles = StyleSheet.create({
 	head: {
@@ -190,15 +228,16 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 	},
 	feature: {
+		flex: 1,
 		height: 65,
-		width: 90,
+		maxWidth: 90,
 		borderRadius: 35,
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "red",
 	},
-	h_2: {
-		height: 2,
+	h_1: {
+		height: 1,
 	},
 	mh_10: {
 		marginHorizontal: 10,
@@ -206,6 +245,18 @@ const styles = StyleSheet.create({
 	mv_15: {
 		marginVertical: 15,
 	},
+	newsItem: {
+		padding: 15,
+	},
+	newsImage: {
+		height: 250,
+		borderRadius: 20,
+		flex: 1,
+	},
+	newsTitle:{
+		marginTop:10,
+		lineHeight:30
+	}
 });
 
 export default Home;
